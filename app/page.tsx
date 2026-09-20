@@ -84,7 +84,7 @@ export default function Home() {
           </label>
           <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Paris" />
           <p className="mt-1.5 text-xs text-slate-400">
-            Donnees de demonstration disponibles pour : {availableCities.join(", ")}. La meteo, elle, fonctionne pour
+            Lieux reels (POI + bornes de recharge via TomTom Maps) disponibles pour : {availableCities.join(", ")}. Cout et duree de visite restent estimes. La meteo fonctionne pour
             n&apos;importe quelle ville reelle.
           </p>
         </div>

@@ -1,6 +1,7 @@
-// Donnees de demonstration -- a remplacer par un vrai connecteur POI
-// (ex. OpenStreetMap Overpass) avant tout usage en production.
-// Aucune de ces valeurs ne doit etre consideree comme un prix ou un horaire reel a jour.
+// Donnees POI recuperees via le connecteur TomTom Maps (recherche live, le 2026-09-20).
+// Musees, restaurants et bornes de recharge reels avec adresse. Cout et duree de visite restent
+// estimes (TomTom ne fournit ni prix ni duree de visite) : traiter ces deux champs comme
+// approximatifs jusqu'a branchement d'une source de prix dediee (site de l'etablissement).
 
 export type StepType = "activite" | "repas" | "pause" | "deplacement"
 
@@ -16,19 +17,19 @@ export type CandidateStep = {
 
 export const DEMO_CITIES: Record<string, CandidateStep[]> = {
   Paris: [
-    { name: "Musee d'Orsay", type: "activite", durationMinutes: 90, cost: 16, source: { name: "Musee d'Orsay (site officiel, donnee demo)", level: 1 } },
-    { name: "Jardin du Luxembourg", type: "activite", durationMinutes: 45, cost: 0, source: { name: "Ville de Paris (donnee demo)", level: 2 } },
-    { name: "Cafe de Flore", type: "repas", durationMinutes: 60, cost: 22, source: { name: "Agregateur avis (donnee demo)", level: 4 } },
-    { name: "Marche des Enfants Rouges", type: "repas", durationMinutes: 40, cost: 12, source: { name: "Office de tourisme Paris (donnee demo)", level: 2 } },
-    { name: "Pause Seine, Pont des Arts", type: "pause", durationMinutes: 20, cost: 0, source: { name: "Ville de Paris (donnee demo)", level: 2 } },
-    { name: "Trajet metro centre-ville", type: "deplacement", durationMinutes: 15, cost: 2.15, source: { name: "RATP (donnee demo)", level: 1 } },
+    { name: "Galerie du Haut Pave (3 Quai de Montebello)", type: "activite", durationMinutes: 40, cost: 0, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
+    { name: "Cybele, librairie-galerie (65 Rue Galande)", type: "activite", durationMinutes: 30, cost: 0, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
+    { name: "Rose Monde (6 Parvis Notre-Dame)", type: "repas", durationMinutes: 55, cost: 18, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
+    { name: "Food & Cafe (6 Parvis Notre-Dame)", type: "repas", durationMinutes: 35, cost: 11, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
+    { name: "Recharge TEVGO, 4 Quai du Marche Neuf (Type 2 / CCS / Chademo)", type: "pause", durationMinutes: 25, cost: 0, source: { name: "TomTom Maps EV Search, disponibilite en temps reel au moment de la requete", level: 2 } },
+    { name: "Trajet metro centre-ville", type: "deplacement", durationMinutes: 15, cost: 2.15, source: { name: "RATP (tarif estime)", level: 2 } },
   ],
   Lyon: [
-    { name: "Basilique de Fourviere", type: "activite", durationMinutes: 60, cost: 0, source: { name: "Office de tourisme Lyon (donnee demo)", level: 2 } },
-    { name: "Musee des Confluences", type: "activite", durationMinutes: 90, cost: 9, source: { name: "Musee des Confluences (donnee demo)", level: 1 } },
-    { name: "Bouchon lyonnais Vieux Lyon", type: "repas", durationMinutes: 60, cost: 20, source: { name: "Agregateur avis (donnee demo)", level: 4 } },
-    { name: "Halles de Lyon Paul Bocuse", type: "repas", durationMinutes: 40, cost: 14, source: { name: "Halles de Lyon (donnee demo)", level: 2 } },
-    { name: "Pause Parc de la Tete d'Or", type: "pause", durationMinutes: 20, cost: 0, source: { name: "Ville de Lyon (donnee demo)", level: 2 } },
-    { name: "Trajet metro/funiculaire", type: "deplacement", durationMinutes: 12, cost: 2.0, source: { name: "TCL (donnee demo)", level: 1 } },
+    { name: "Musee de l'Imprimerie de Lyon (13 Rue de la Poulaillerie)", type: "activite", durationMinutes: 70, cost: 8, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "https://www.imprimerie.lyon.fr/imprimerie/" } },
+    { name: "APN Gallery (33 Rue de la Republique)", type: "activite", durationMinutes: 30, cost: 0, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "http://www.apngallery.com" } },
+    { name: "Chez Basset, pizzeria (18 Rue de la Republique)", type: "repas", durationMinutes: 50, cost: 16, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "http://chezbasset.com" } },
+    { name: "Charcuterie Bonnard (36 Rue Grenette)", type: "repas", durationMinutes: 35, cost: 13, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "http://www.charcuteriebonnard.fr" } },
+    { name: "Recharge E-Totem, 2 Quai Saint-Antoine (46 bornes disponibles au moment de la requete)", type: "pause", durationMinutes: 20, cost: 0, source: { name: "TomTom Maps EV Search, disponibilite en temps reel au moment de la requete", level: 2 } },
+    { name: "Trajet metro/funiculaire", type: "deplacement", durationMinutes: 12, cost: 2.0, source: { name: "TCL (tarif estime)", level: 2 } },
   ],
 }

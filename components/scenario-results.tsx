@@ -90,9 +90,9 @@ export function ScenarioResults({ result, weather, weatherError }: { result: Sce
           <Sparkles size={13} /> Comment ce scenario est construit ?
         </p>
         Le moteur choisit uniquement parmi les etapes disponibles pour la ville selectionnee et ne fabrique jamais un
-        prix, un horaire ou une disponibilite absent de la source. Les etapes ci-dessus proviennent d\'un jeu de
-        donnees de demonstration (a remplacer par un vrai connecteur POI) ; seule la meteo affichee ci-dessus est une
-        donnee live reelle (Open-Meteo).
+        prix, un horaire ou une disponibilite absent de la source. Les lieux et bornes de recharge ci-dessus
+        proviennent d\'une recherche live TomTom Maps ; la meteo provient d\'Open-Meteo. Le cout et la duree de
+        visite restent des estimations tant qu\'une source de prix dediee n\'est pas branchee.
       </div>
     </div>
   )
