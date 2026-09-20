@@ -62,7 +62,7 @@ export function analyzeScenario(
     }
   }
 
-  const sorted = [...candidates].sort((a, b) => scoreStep(a, mode) - scoreStep(b, mode))
+  const sorted = [...candidates].sort((a, b) => scoreStep(a, input.mode) - scoreStep(b, input.mode))
 
   const picked: CandidateStep[] = []
   let usedMinutes = 0
