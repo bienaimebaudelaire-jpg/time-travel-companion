@@ -19,16 +19,16 @@ const LEVEL_LABEL: Record<number, string> = {
 }
 
 const LEVEL_COLOR: Record<number, string> = {
-  1: "#2c7a68",
-  2: "#4676b8",
-  3: "#b8862d",
-  4: "#667085",
+  1: "var(--harbor)",
+  2: "var(--coral)",
+  3: "var(--gold)",
+  4: "var(--ink-soft)",
 }
 
 export function ScenarioResults({ result, weather, weatherError }: { result: ScenarioResult; weather: WeatherResult | null; weatherError: string | null }) {
   if (!result.feasible) {
     return (
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
+      <div className="border border-[var(--coral)]/40 bg-[var(--coral)]/10 p-6 text-sm text-[var(--ink)]">
         <p className="font-semibold">Aucun scenario ne rentre dans ce temps.</p>
         <p className="mt-1">{result.reason}</p>
       </div>
@@ -38,42 +38,42 @@ export function ScenarioResults({ result, weather, weatherError }: { result: Sce
   const usedRatio = Math.min(100, Math.round((result.totalDurationMinutes / result.availableMinutes) * 100))
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_-22px_rgba(15,23,42,.4)]">
+    <div className="space-y-4">
+      <div className="bg-[var(--ticket)] p-5">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <Wallet size={16} style={{ color: "#2c7a68" }} /> {result.totalCost.toFixed(2)} EUR au total
+          <div className="font-board flex items-center gap-2 text-sm font-semibold text-[var(--ink)]">
+            <Wallet size={15} style={{ color: "var(--harbor)" }} /> {result.totalCost.toFixed(2)} EUR
           </div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <Clock size={16} style={{ color: "#4676b8" }} /> {result.totalDurationMinutes} min sur {result.availableMinutes} min disponibles
+          <div className="font-board flex items-center gap-2 text-sm font-semibold text-[var(--ink)]">
+            <Clock size={15} style={{ color: "var(--coral)" }} /> {result.totalDurationMinutes} / {result.availableMinutes} min
           </div>
           {weather && (
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-              <Cloud size={16} style={{ color: "#4676b8" }} /> {weather.city} : {weather.temperatureC} degres C, {weather.condition}
+            <div className="font-board flex items-center gap-2 text-sm font-semibold text-[var(--ink)]">
+              <Cloud size={15} style={{ color: "var(--harbor)" }} /> {weather.city} : {weather.temperatureC}&deg;C, {weather.condition}
             </div>
           )}
-          {weatherError && <div className="text-sm text-amber-700">Meteo indisponible : {weatherError}</div>}
+          {weatherError && <div className="text-sm text-[var(--coral)]">Meteo indisponible : {weatherError}</div>}
         </div>
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full bg-[#2c7a68] transition-all" style={{ width: `${usedRatio}%` }} />
+        <div className="mt-4 h-1.5 overflow-hidden bg-[var(--ticket-line)]">
+          <div className="h-full bg-[var(--coral)] transition-all" style={{ width: `${usedRatio}%` }} />
         </div>
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-[var(--ink-soft)]">
           Marge de securite reservee pour le retour : {result.marginMinutes} min.
         </p>
       </div>
 
-      <ol className="space-y-3">
-        {result.steps.map((step) => (
-          <li key={`${step.order}-${step.name}`} className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+      <ol className="space-y-0">
+        {result.steps.map((step, i) => (
+          <li key={`${step.order}-${step.name}`} className={`flex gap-4 bg-[var(--ticket)] p-4 ${i > 0 ? "ticket-perforation" : ""}`}>
+            <div className="font-board flex h-9 w-9 shrink-0 items-center justify-center border border-[var(--ticket-line)] text-sm font-semibold text-[var(--harbor)]">
               {step.order}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="font-medium text-slate-800">{step.name}</p>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">{TYPE_LABEL[step.type]}</span>
+                <p className="font-medium text-[var(--ink)]">{step.name}</p>
+                <span className="font-board border border-[var(--ticket-line)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--ink-soft)]">{TYPE_LABEL[step.type]}</span>
               </div>
-              <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+              <div className="font-board mt-1.5 flex flex-wrap items-center gap-3 text-xs text-[var(--ink-soft)]">
                 <span>{step.durationMinutes} min</span>
                 <span>{step.cost > 0 ? `${step.cost.toFixed(2)} EUR` : "Gratuit"}</span>
                 <span className="inline-flex items-center gap-1 font-medium" style={{ color: LEVEL_COLOR[step.source.level] }}>
@@ -85,14 +85,14 @@ export function ScenarioResults({ result, weather, weatherError }: { result: Sce
         ))}
       </ol>
 
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-xs leading-relaxed text-slate-500">
-        <p className="mb-1 flex items-center gap-1.5 font-semibold text-slate-700">
+      <div className="bg-[var(--harbor)] p-5 text-xs leading-relaxed text-[var(--ticket)]/80">
+        <p className="mb-1 flex items-center gap-1.5 font-semibold text-[var(--ticket)]">
           <Sparkles size={13} /> Comment ce scenario est construit ?
         </p>
         Le moteur choisit uniquement parmi les etapes disponibles pour la ville selectionnee et ne fabrique jamais un
         prix, un horaire ou une disponibilite absent de la source. Les lieux et bornes de recharge ci-dessus
-        proviennent d\'une recherche live TomTom Maps ; la meteo provient d\'Open-Meteo. Le cout et la duree de
-        visite restent des estimations tant qu\'une source de prix dediee n\'est pas branchee.
+        proviennent d&rsquo;une recherche live TomTom Maps ; la meteo provient d&rsquo;Open-Meteo. Le cout et la duree de
+        visite restent des estimations tant qu&rsquo;une source de prix dediee n&rsquo;est pas branchee.
       </div>
     </div>
   )

@@ -1,30 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f9fb;
-  --foreground: #0f172a;
-  --primary: #2c7a68;
-  --secondary: #4676b8;
-  --muted: #64748b;
-  --border: #e2e8f0;
+  --harbor: #16333a;
+  --harbor-soft: #2c505a;
+  --ticket: #fbf7ee;
+  --ticket-line: #d9cdb8;
+  --coral: #e2673b;
+  --gold: #c79a46;
+  --ink: #1c2130;
+  --ink-soft: #5c6270;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: var(--harbor);
+  color: var(--ink);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-board {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: 0.02em;
+}
+
+.ticket-perforation {
+  position: relative;
+}
+
+.ticket-perforation::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  top: 0;
+  border-top: 2px dashed var(--ticket-line);
 }
 
 @theme inline {
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-border: var(--border);
-  --color-input: var(--border);
-  --color-ring: var(--secondary);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted-foreground: var(--muted);
-  --color-primary-foreground: #ffffff;
-  --color-accent: #eef2f4;
-  --color-accent-foreground: #0f172a;
+  --color-harbor: var(--harbor);
+  --color-ticket: var(--ticket);
+  --color-coral: var(--coral);
+  --color-gold: var(--gold);
+  --color-border: var(--ticket-line);
+  --color-input: var(--ticket-line);
+  --color-ring: var(--coral);
+  --color-background: var(--ticket);
+  --color-foreground: var(--ink);
+  --color-muted-foreground: var(--ink-soft);
+  --color-primary: var(--harbor);
+  --color-primary-foreground: var(--ticket);
+  --color-accent: #f1ece0;
+  --color-accent-foreground: var(--ink);
 }
