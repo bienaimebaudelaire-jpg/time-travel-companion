@@ -21,7 +21,7 @@ export const DEMO_CITIES: Record<string, CandidateStep[]> = {
     { name: "Cybele, librairie-galerie (65 Rue Galande)", type: "activite", durationMinutes: 30, cost: 0, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
     { name: "Rose Monde (6 Parvis Notre-Dame)", type: "repas", durationMinutes: 55, cost: 18, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
     { name: "Food & Cafe (6 Parvis Notre-Dame)", type: "repas", durationMinutes: 35, cost: 11, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3 } },
-    { name: "Recharge TEVGO, 4 Quai du Marche Neuf (Type 2 / CCS / Chademo)", type: "pause", durationMinutes: 25, cost: 0, source: { name: "TomTom Maps EV Search, disponibilite en temps reel au moment de la requete", level: 2 } },
+    { name: "Recharge TEVGO, 4 Quai du Marche Neuf (Type 2 / CCS / Chademo)", type: "pause", durationMinutes: 25, cost: 0, source: { name: "TomTom Maps EV Search, disponibilite relevee le 2026-09-20 (instantane, non temps reel)", level: 2 } },
     { name: "Trajet metro centre-ville", type: "deplacement", durationMinutes: 15, cost: 2.15, source: { name: "RATP (tarif estime)", level: 2 } },
   ],
   Lyon: [
@@ -29,7 +29,28 @@ export const DEMO_CITIES: Record<string, CandidateStep[]> = {
     { name: "APN Gallery (33 Rue de la Republique)", type: "activite", durationMinutes: 30, cost: 0, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "http://www.apngallery.com" } },
     { name: "Chez Basset, pizzeria (18 Rue de la Republique)", type: "repas", durationMinutes: 50, cost: 16, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "http://chezbasset.com" } },
     { name: "Charcuterie Bonnard (36 Rue Grenette)", type: "repas", durationMinutes: 35, cost: 13, source: { name: "TomTom Maps, POI verifie le 2026-09-20", level: 3, url: "http://www.charcuteriebonnard.fr" } },
-    { name: "Recharge E-Totem, 2 Quai Saint-Antoine (46 bornes disponibles au moment de la requete)", type: "pause", durationMinutes: 20, cost: 0, source: { name: "TomTom Maps EV Search, disponibilite en temps reel au moment de la requete", level: 2 } },
+    { name: "Recharge E-Totem, 2 Quai Saint-Antoine (46 bornes relevees le 2026-09-20)", type: "pause", durationMinutes: 20, cost: 0, source: { name: "TomTom Maps EV Search, disponibilite relevee le 2026-09-20 (instantane, non temps reel)", level: 2 } },
     { name: "Trajet metro/funiculaire", type: "deplacement", durationMinutes: 12, cost: 2.0, source: { name: "TCL (tarif estime)", level: 2 } },
   ],
+}
+
+function normalizeCityKey(value: string): string {
+  return value
+    .trim()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+}
+
+const CANONICAL_CITY_BY_NORMALIZED_KEY: Record<string, string> = Object.fromEntries(
+  Object.keys(DEMO_CITIES).map((key) => [normalizeCityKey(key), key])
+)
+
+/**
+ * Looks up candidate steps for a city regardless of casing/accents/surrounding whitespace
+ * (e.g. "paris", " PARIS ", "Lyón" all resolve to the same entry).
+ */
+export function getCandidatesForCity(city: string): CandidateStep[] | undefined {
+  const canonicalKey = CANONICAL_CITY_BY_NORMALIZED_KEY[normalizeCityKey(city)]
+  return canonicalKey ? DEMO_CITIES[canonicalKey] : undefined
 }

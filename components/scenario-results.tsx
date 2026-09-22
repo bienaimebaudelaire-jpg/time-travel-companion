@@ -7,7 +7,7 @@ import type { WeatherResult } from "@/lib/weather"
 const TYPE_LABEL: Record<string, string> = {
   activite: "Activite",
   repas: "Repas",
-  pause: "Pause",
+  pause: "Recharge VE",
   deplacement: "Deplacement",
 }
 
@@ -39,6 +39,12 @@ export function ScenarioResults({ result, weather, weatherError }: { result: Sce
 
   return (
     <div className="space-y-4">
+      {result.warning && (
+        <div className="border border-[var(--gold)]/50 bg-[var(--gold)]/10 p-4 text-sm text-[var(--ink)]">
+          {result.warning}
+        </div>
+      )}
+
       <div className="bg-[var(--ticket)] p-5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="font-board flex items-center gap-2 text-sm font-semibold text-[var(--ink)]">
