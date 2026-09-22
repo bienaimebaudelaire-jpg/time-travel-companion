@@ -4,8 +4,8 @@ import { useState } from "react"
 import { MapPin, Clock, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { DEMO_CITIES } from "@/lib/demo-data"
-import { analyzeScenario, type ScenarioResult, type ScenarioMode } from "@/lib/scenario-engine"
+import { DEMO_CITIES, getCandidatesForCity } from "@/lib/demo-data"
+import { analyzeScenario, type ScenarioResult, type ScenarioMode, type TransportMode } from "@/lib/scenario-engine"
 import { fetchWeatherForCity, type WeatherResult } from "@/lib/weather"
 import { ScenarioResults } from "@/components/scenario-results"
 
@@ -16,10 +16,17 @@ const DURATIONS = [
   { label: "Journee", minutes: 480 },
 ]
 
+const TRANSPORT_MODES: { value: TransportMode; label: string }[] = [
+  { value: "pied", label: "A pied" },
+  { value: "transports", label: "Transports" },
+  { value: "electrique", label: "Voiture electrique" },
+]
+
 export default function Home() {
   const [durationMinutes, setDurationMinutes] = useState(120)
   const [city, setCity] = useState("Paris")
   const [mode, setMode] = useState<ScenarioMode>("equilibre")
+  const [transportMode, setTransportMode] = useState<TransportMode>("pied")
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ScenarioResult | null>(null)
   const [weather, setWeather] = useState<WeatherResult | null>(null)
@@ -30,8 +37,8 @@ export default function Home() {
   async function handleSubmit() {
     setLoading(true)
     setWeatherError(null)
-    const candidates = DEMO_CITIES[city] ?? []
-    const scenario = analyzeScenario({ durationMinutes, city, mode }, candidates)
+    const candidates = getCandidatesForCity(city) ?? []
+    const scenario = analyzeScenario({ durationMinutes, city, mode, transportMode }, candidates)
     setResult(scenario)
 
     try {
@@ -118,6 +125,29 @@ export default function Home() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="mb-2 block text-sm font-semibold text-[var(--ink)]">Je me deplace en</label>
+            <div className="grid grid-cols-3 gap-2">
+              {TRANSPORT_MODES.map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => setTransportMode(t.value)}
+                  className={`font-board border px-2 py-2 text-xs font-medium transition-colors ${
+                    transportMode === t.value
+                      ? "border-[var(--harbor)] bg-[var(--harbor)]/10 text-[var(--harbor)]"
+                      : "border-[var(--ticket-line)] text-[var(--ink-soft)] hover:border-[var(--harbor)]"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-[var(--ink-soft)]">
+              Les etapes de recharge ne sont proposees que si vous vous deplacez en voiture electrique.
+            </p>
           </div>
 
           <div className="ticket-perforation mt-8 pt-6">
