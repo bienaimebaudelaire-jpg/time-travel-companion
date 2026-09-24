@@ -12,6 +12,60 @@ Scaffold V1 : transforme un temps disponible + une ville en scenario de sortie c
 
 Brancher un vrai connecteur POI (OpenStreetMap Overpass en priorite, gratuit et sans cle) a la place de `demo-data.ts`, en respectant la hierarchie de sources definie dans la spec produit (officiel > institutionnel > partenaires > agregateurs).
 
+## Couche preparatoire "agent runtime" (sans dependance Automaton)
+
+Une couche locale d'adaptation est disponible dans `lib/agent-mission-adapter.ts`.
+Elle expose un contrat pour une mission de planification de type agent :
+
+- **Entree** : temps disponible, ville, mode, contraintes (`transportMode`, plafond de cout optionnel).
+- **Sortie** : scenario calcule, meteo (si disponible), provenance des donnees, avertissements, actions proposees.
+- **Mode propositionnel uniquement** : aucune reservation, aucun paiement, aucune ecriture sur un calendrier externe.
+
+### Exemple d'appel local
+
+```ts
+import { runPlanningMission } from "@/lib/agent-mission-adapter"
+
+const response = await runPlanningMission({
+  missionId: "mission-001",
+  mode: "proposition",
+  input: {
+    availableMinutes: 120,
+    city: "Paris",
+    mode: "equilibre",
+    constraints: { transportMode: "pied", maxCostEur: 25 },
+  },
+})
+```
+
+### Exemple de configuration/prompt pour un futur agent Automaton/HUMEAN
+
+```json
+{
+  "agentName": "travel-planner-proposal",
+  "runtimeMode": "proposal-only",
+  "tools": ["runPlanningMission"],
+  "forbiddenActions": ["book", "pay", "write_external_calendar", "self_modify", "replicate"],
+  "requiresHumanApproval": true
+}
+```
+
+Prompt systeme suggere :
+
+```text
+Tu es un agent de planification en mode propositionnel strict.
+Tu peux appeler runPlanningMission pour recommander un scenario.
+Tu ne dois jamais reserver, payer, modifier un calendrier externe, ni executer d'action irreversible.
+Tu dois retourner les avertissements et la provenance (meteo live, donnees demo, estimations).
+```
+
+### Limites explicites
+
+- Cette couche **n'importe pas Automaton** : elle prepare seulement un contrat local stable.
+- Les POI restent des donnees de demonstration (`lib/demo-data.ts`).
+- Les couts et durees de visite sont des estimations.
+- Seule la meteo est live (Open-Meteo) et peut etre indisponible.
+
 ## Demarrer en local
 
 ```bash
