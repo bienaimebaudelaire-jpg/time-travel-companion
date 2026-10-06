@@ -32,3 +32,34 @@ Comparaison avec des planificateurs de voyage open source existants (notamment `
 - **Export vers Google Maps** : permettrait de sortir le scenario construit vers une vraie navigation.
 
 Aucun de ces points n'est urgent pour le MVP actuel (voir section 7 de la spec produit), mais ils donnent un ordre de priorite concret pour la V2 plutot que de repartir de zero sur les idees.
+
+## Integration NVIDIA OpenShell (optionnelle)
+
+Le module serveur `lib/openshell.ts` encapsule le CLI OpenShell sans passer par un shell systeme. Il permet de creer, lister et supprimer des sandboxes, ou d'executer une commande de composition dans une sandbox existante. Le CLI `openshell` doit etre installe et configure separement (Docker, Podman ou virtualisation locale selon la plateforme) ; cette integration n'est pas requise pour lancer l'application.
+
+```ts
+import { runOpenShellScenarioCommand } from "@/lib/openshell"
+
+const result = await runOpenShellScenarioCommand({
+  action: "compose",
+  sandbox: "planner",
+  command: ["scenario-agent", "compose", "--city", "Paris", "--duration", "120"],
+})
+console.log(result.stdout)
+```
+
+`scenario-agent` est une commande fournie par l'image de sandbox choisie, pas par ce projet. Le sandbox OpenShell par defaut est minimal et ne contient pas cet agent : fournissez une image adaptee avec `from` lors de sa creation, ou installez-y l'agent au prealable. Le wrapper transmet chaque argument separement, limite le temps d'execution a 30 secondes et la sortie a 1 Mio par defaut. Le CLI est injectable avec `OPENSHELL_CLI` si son executable n'est pas dans le `PATH`.
+
+Exemples de gestion d'une sandbox :
+
+```ts
+await runOpenShellScenarioCommand({
+  action: "create",
+  name: "planner",
+  from: "registry.example/scenario-agent:latest",
+})
+const sandboxes = await runOpenShellScenarioCommand({ action: "list" })
+await runOpenShellScenarioCommand({ action: "delete", sandbox: "planner" })
+```
+
+Le SDK TypeScript officiel `@nvidia/openshell-sdk` est declare comme dependance optionnelle. Il est distribue via GitHub Packages (registre `https://npm.pkg.github.com`) et necessite un jeton GitHub avec `read:packages`; sans ce SDK, le wrapper CLI reste utilisable. Ne placez jamais le jeton dans le depot.

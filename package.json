@@ -18,6 +18,9 @@
     "class-variance-authority": "^0.7.1",
     "@radix-ui/react-slot": "1.2.4"
   },
+  "optionalDependencies": {
+    "@nvidia/openshell-sdk": "^0.1.2"
+  },
   "devDependencies": {
     "typescript": "5.7.3",
     "@types/node": "^24",
