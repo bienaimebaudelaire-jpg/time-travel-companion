@@ -27,7 +27,21 @@ describe("OpenShell scenario commands", () => {
         sandbox: "planner",
         command: ["scenario-agent", "compose", "--city", "Paris"],
       })
-    ).toEqual(["sandbox", "exec", "planner", "--", "scenario-agent", "compose", "--city", "Paris"])
+    ).toEqual(["sandbox", "exec", "--name", "planner", "--", "scenario-agent", "compose", "--city", "Paris"])
+  })
+
+  it("only accepts lowercase DNS-1123 sandbox names and never a flag", () => {
+    for (const sandbox of ["--all", "-x", "Upper", "under_score", "a.b", "", "-lead", "trail-", "a".repeat(64)]) {
+      expect(() => getOpenShellScenarioArgs({ action: "delete", sandbox })).toThrow(TypeError)
+      expect(() => getOpenShellScenarioArgs({ action: "create", name: sandbox })).toThrow(TypeError)
+      expect(() => getOpenShellScenarioArgs({ action: "compose", sandbox, command: ["ls"] })).toThrow(TypeError)
+    }
+  })
+
+  it("rejects image references that could be read as flags or contain unsafe characters", () => {
+    for (const from of ["--gpu", "-x", "img; rm -rf /", "img name", ""]) {
+      expect(() => getOpenShellScenarioArgs({ action: "create", name: "planner", from })).toThrow(TypeError)
+    }
   })
 
   it("rejects invalid sandbox names and empty composition commands", () => {

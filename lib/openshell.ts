@@ -2,7 +2,9 @@ import { spawn } from "node:child_process"
 
 const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_MAX_OUTPUT_BYTES = 1024 * 1024
-const SANDBOX_NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,62}$/
+// OpenShell sandbox names are lowercase DNS-1123 labels (max 63 chars).
+const SANDBOX_NAME_PATTERN = /^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$/
+const IMAGE_REFERENCE_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$/
 
 export type OpenShellRunOptions = {
   executable?: string
@@ -42,11 +44,13 @@ export function getOpenShellScenarioArgs(command: OpenShellScenarioCommand): str
       if (command.command.length === 0) {
         throw new TypeError("A scenario composition command cannot be empty.")
       }
-      return ["sandbox", "exec", command.sandbox, "--", ...command.command]
+      // Documented syntax: `openshell sandbox exec --name <name> -- <command...>`.
+      return ["sandbox", "exec", "--name", command.sandbox, "--", ...command.command]
     case "list":
       return ["sandbox", "list"]
     case "create":
       validateSandboxName(command.name)
+      if (command.from !== undefined) validateImageReference(command.from)
       return [
         "sandbox",
         "create",
@@ -149,7 +153,15 @@ export function runOpenShellCommand(
 
 function validateSandboxName(name: string): void {
   if (typeof name !== "string" || !SANDBOX_NAME_PATTERN.test(name)) {
-    throw new TypeError("Sandbox names must be 1–63 characters and contain only letters, numbers, dots, underscores, or hyphens.")
+    throw new TypeError(
+      "Sandbox names must be lowercase DNS-1123 labels: 1–63 characters, lowercase letters, numbers or hyphens, starting and ending with a letter or number."
+    )
+  }
+}
+
+function validateImageReference(reference: string): void {
+  if (typeof reference !== "string" || !IMAGE_REFERENCE_PATTERN.test(reference)) {
+    throw new TypeError("The sandbox image reference contains unsupported characters.")
   }
 }
 
