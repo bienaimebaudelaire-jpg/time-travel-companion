@@ -62,4 +62,6 @@ const sandboxes = await runOpenShellScenarioCommand({ action: "list" })
 await runOpenShellScenarioCommand({ action: "delete", sandbox: "planner" })
 ```
 
-Le SDK TypeScript officiel `@nvidia/openshell-sdk` est declare comme dependance optionnelle. Il est distribue via GitHub Packages (registre `https://npm.pkg.github.com`) et necessite un jeton GitHub avec `read:packages`; sans ce SDK, le wrapper CLI reste utilisable. Ne placez jamais le jeton dans le depot.
+Le wrapper n'utilise que le CLI : aucune dependance npm n'est ajoutee. Le SDK TypeScript officiel `@nvidia/openshell-sdk` existe mais il est distribue via GitHub Packages (registre `https://npm.pkg.github.com`, jeton GitHub `read:packages` requis) ; il n'est pas declare dans `package.json` tant que le code ne l'importe pas. Ne placez jamais le jeton dans le depot.
+
+Conventions : les noms de sandbox sont des labels DNS-1123 en minuscules (ex. `planner`), la commande d'execution suit la syntaxe documentee `openshell sandbox exec --name <nom> -- <commande...>`, et `stderr` peut contenir des donnees sensibles (ne pas le renvoyer tel quel au navigateur). Ne construisez jamais une commande a partir d'une saisie utilisateur ou d'une sortie de modele.
